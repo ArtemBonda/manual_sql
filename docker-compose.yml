@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  aviadb:
+    image: postgres:14.4-alpine
+    volumes:
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=db
