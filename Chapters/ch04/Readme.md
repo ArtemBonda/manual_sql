@@ -141,7 +141,7 @@ SELECT * FROM pilots
     WHERE shedule && ARRAY[2, 5];
 ```
 
-* : кто не летает ни во вторник, ни в пятницу? Для получения ответа добавим в предыдущую SQL-команду отрицание NOT:
+* : кто не летает ни во вторник, ни в пятницу? Для получения ответа добавим в предыдущую SQL-команду отрицание NOT:
 ```
 SELECT * FROM pilots
     WHERE NOT (shedule && ARRAY[2,5]);
@@ -166,7 +166,70 @@ ORDER BY  days_of_week;
 -- Создадим таблицу:
 ```
 CREATE TABLE pilot_hobbies (
-pilot_name text,
-hobbies json
+    pilot_name text,
+    hobbies json
 );
+```
+Добавим значения
+```
+INSERT INTO pilot_hobbies
+    VALUES ( 'Ivan',
+    '{ "sports": [ "футбол", "плавание" ],
+    "home_lib": true, "trips": 3
+    }'::jsonb
+    ),
+    ( 'Petr',
+    '{ "sports": [ "теннис", "плавание" ],
+    "home_lib": true, "trips": 2
+    }'::jsonb
+    ),
+    ( 'Pavel',
+    '{ "sports": [ "плавание" ],
+    "home_lib": false, "trips": 4
+    }'::jsonb
+    ),
+    ( 'Boris',
+    '{ "sports": [ "футбол", "плавание", "теннис" ],
+    "home_lib": true, "trips": 0
+    }'::jsonb
+    );
+
+```
+Поиск кто играет в футбол
+```
+SELECT * FROM pilot_hobbies
+WHERE hobbies @> '{ "sports": [ "футбол" ] }'::jsonb;
+```
+или с операцией " -> " которая служит для обращения к конкретному ключую
+```
+SELECT pilot_name, hobbies->'sports' AS sport
+    FROM pilot_hobbies
+    WHERE hobbies->'sports' @> '["футбол"]'::jsonb;
+```
+
+Оператор " ? " проверка если такой ключ в JSON объекте
+
+```
+SELECT count(*)
+    FROM pilot_hobbies
+    WHERE hobbies ? 'sports';
+```
+Обновить значение в поле 
+```
+UPDATE pilot_hobbies
+    SET hobbies=hobbies || '{"sports":["хоккей"]}'
+    WHERE pilot_name='Boris';
+```
+Например можно вставить неправильное згачение или сделать опечатку в ключе, чтобы измеить или удалить этот ключ 
+мого использовать jsonb_delete() или jsonb_delete_path()
+```
+update pilot_hobbies
+set hobbies = jsonb_delete_path(hobbies, '{"home_lub"}')
+where pilot_name='Boris';
+```
+добавить значение jsonb_set()
+```
+UPDATE pilot_hobbies
+    SET hobbies=jsonb_set(hobbies, '{sports, 1}', '"футбол"')
+    WHERE pilot_name='Boris';
 ```

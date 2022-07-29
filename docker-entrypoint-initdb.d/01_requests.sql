@@ -200,3 +200,32 @@ SELECT * From pilot_hobbies
 SELECT pilot_name, hobbies->'sports' AS sport
     FROM pilot_hobbies
     WHERE hobbies->'sports' @> '["футбол"]'::jsonb;
+
+-- Поиск в JSON значение true по кокретному ключу
+SELECT pilot_name, hobbies->'home_lib'
+    from pilot_hobbies
+    WHERE hobbies->'home_lib' @> 'true'::jsonb;
+
+SELECT count(*)
+    FROM pilot_hobbies
+    WHERE hobbies ? 'sports';
+
+-- Обновить представление JSON
+UPDATE pilot_hobbies
+    SET hobbies=hobbies || '{"sports":["хоккей"]}'
+    WHERE pilot_name='Boris';
+
+UPDATE pilot_hobbies
+    SET hobbies=hobbies || '{"home_lib":false}'
+    WHERE pilot_name='Boris';
+-- А как удалить неправильное вставленное поле у Бориса?^
+update pilot_hobbies
+set hobbies = jsonb_delete_path(hobbies, '{"home_lub"}')
+where pilot_name='Boris';
+
+UPDATE pilot_hobbies
+    SET hobbies=jsonb_set(hobbies, '{sports, 1}', '"футбол"')
+    WHERE pilot_name='Boris';
+
+SELECT * From pilot_hobbies
+    WHERE pilot_name='Boris';
