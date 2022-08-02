@@ -229,3 +229,5 @@ UPDATE pilot_hobbies
 
 SELECT * From pilot_hobbies
     WHERE pilot_name='Boris';
+
+COMMENT ON COLUMN airports.city IS 'Город в котором аэропорт';

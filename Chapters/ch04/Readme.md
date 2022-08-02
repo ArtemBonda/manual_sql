@@ -233,3 +233,6 @@ UPDATE pilot_hobbies
     SET hobbies=jsonb_set(hobbies, '{sports, 1}', '"футбол"')
     WHERE pilot_name='Boris';
 ```
+
+Контрольные вопросы
+1. 
