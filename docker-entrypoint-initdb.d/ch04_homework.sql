@@ -167,3 +167,36 @@ Where birthday + '40 years'::interval<current_date;
 -- Определить точный возвраст
 SELECT *, (current_date::timestamp - birthday::timestamp)::interval AS days
 FROM birthdays ORDER BY days DESC;
+
+-- 33*
+-- Добавить атрибут meal text[] в таблицу pilots
+ALTER TABLE pilots
+    ADD COLUMN  meal text[];
+
+-- Заполнить атрибут meal значениями
+UPDATE pilots SET meal = '{"сосиска", "макароны", "кофе"}'::text[] WHERE pilot_name = 'Ivan';
+UPDATE pilots SET meal = '{"котлета","каша","кофе"}'::text[] WHERE pilot_name = 'Petr';
+UPDATE pilots SET meal = '{"сосиска","каша","кофе"}'::text[] WHERE pilot_name = 'Pavel';
+UPDATE pilots SET meal = '{"котлета","каша", "чай"}'::text[] WHERE pilot_name = 'Boris';
+-- Список пилотов, предпочитающих на обед сосиски
+SELECT pilot_name, meal FROM pilots WHERE meal[1] = 'сосиска';
+-- Задание. Создайте новую версию таблицы и соответственно измените команду INSERT, чтобы в ней содержались литералы двумерных массивов.
+ALTER TABLE pilots DROP COLUMN meal;
+ALTER TABLE pilots ADD COLUMN meal text[][];
+
+ALTER TABLE pilots ALTER COLUMN meal SET DATA TYPE text[][];
+
+UPDATE pilots SET meal = '{{"сосиска","макроны","кофе"},
+                           {"котлета", "каша", "кофе" },
+                           {"сосиска", "каша", "кофе" },
+                           {"котлета", "каша", "чай" } }'::text[][] where pilot_name = 'Ivan';
+
+UPDATE pilots SET meal = '{{"сосиска","макроны","кофе"},
+                           {"котлета", "каша", "кофе" },
+                           {"сосиска", "каша", "кофе" },
+                           {"котлета", "каша", "чай" } }'::text[][] where pilot_name = 'Pavel';
+
+-- ряд выборок и обновлений строк в этой таблице
+SELECT pilot_name, meal FROM pilots
+    WHERE pilots.meal[1] = 'котлета';
+SELECT pilot_name, meal FROM pilots WHERE pilots.meal[1][2] = 'макроны';

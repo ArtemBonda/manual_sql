@@ -231,3 +231,50 @@ SELECT * From pilot_hobbies
     WHERE pilot_name='Boris';
 
 COMMENT ON COLUMN airports.city IS 'Город в котором аэропорт';
+
+--ALTER TABLE aircrafts DROP COLUMN speed;
+-- ALTER TABLE aircrafts ADD COLUMN speed integer NOT NULL CHECK( speed >= 300 );
+ALTER TABLE aircrafts ADD COLUMN speed integer;
+
+UPDATE aircrafts SET speed = 807 WHERE aircraft_code = '733';
+UPDATE aircrafts SET speed = 851 WHERE aircraft_code = '763';
+UPDATE aircrafts SET speed = 905 WHERE aircraft_code = '773';
+UPDATE aircrafts SET speed = 840
+    WHERE aircraft_code IN ( '319', '320', '321' );
+UPDATE aircrafts SET speed = 786 WHERE aircraft_code = 'CR2';
+UPDATE aircrafts SET speed = 341 WHERE aircraft_code = 'CN1';
+UPDATE aircrafts SET speed = 830 WHERE aircraft_code = 'SU9';
+SELECT * FROM aircrafts;
+Alter TABLE aircrafts ALTER COLUMN speed SET NOT NULL ;
+ALTER TABLE aircrafts ADD CHECK ( speed >= 300 );
+
+ALTER TABLE airports
+    ALTER COLUMN longitude SET DATA TYPE numeric(5, 2),
+    ALTER COLUMN latitude SET DATA TYPE numeric(5, 2);
+
+INSERT INTO fare_conditions
+    VALUES (1, 'Economy'),
+           (2, 'Business'),
+           (3, 'Comfort');
+
+ALTER TABLE seats
+    DROP CONSTRAINT seats_fare_conditions_check,
+    ALTER COLUMN fare_conditions SET DATA TYPE integer
+        USING ( CASE WHEN fare_conditions = 'Economy' THEN 1
+                     WHEN fare_conditions = 'Business' THEN 2
+                     ELSE 3 END
+        );
+
+ALTER TABLE seats
+    ADD FOREIGN KEY (fare_conditions)
+        REFERENCES fare_conditions (fare_conditions_code);
+
+ALTER TABLE  seats
+    RENAME COLUMN fare_conditions TO fare_conditions_code;
+
+ALTER TABLE seats
+    RENAME CONSTRAINT seats_fare_conditions_fkey
+        TO seats_fare_conditions_code_fkey;
+
+ALTER TABLE fare_conditions ADD UNIQUE ( fare_conditions_name );
+
