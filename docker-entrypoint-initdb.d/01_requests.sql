@@ -278,3 +278,34 @@ ALTER TABLE seats
 
 ALTER TABLE fare_conditions ADD UNIQUE ( fare_conditions_name );
 
+CREATE VIEW seats_by_fare_cond AS
+    SELECT aircraft_code, fare_conditions_code, count(*)
+        FROM seats
+        GROUP BY aircraft_code, fare_conditions_code
+        ORDER BY aircraft_code, fare_conditions_code;
+
+SELECT * FROM seats_by_fare_cond;
+
+CREATE OR REPLACE VIEW seats_by_fare_cond
+AS
+    SELECT aircraft_code, fare_conditions_code,
+       count(*) AS num_seats
+    FROM seats
+    GROUP BY aircraft_code, fare_conditions_code
+    ORDER BY aircraft_code, fare_conditions_code;
+
+-- DROP view seats_by_fare_cond;
+
+CREATE OR REPLACE VIEW seats_by_fare_cond (code, fare_cond, num_seats)
+AS
+    SELECT  aircraft_code, fare_conditions_code, count(*)
+        FROM seats
+        GROUP BY aircraft_code, fare_conditions_code
+        ORDER BY aircraft_code, fare_conditions_code;
+
+DROP VIEW IF EXISTs seats_by_fare_cond;
+
+SELECT * FROM public.aircrafts;
+
+
+

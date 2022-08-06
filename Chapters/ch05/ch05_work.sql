@@ -1,4 +1,4 @@
--- Создавть для БД edu
+-- Создать для БД edu
 CREATE TABLE students (
   record_book numeric(5) NOT NULL ,
   name TEXT NOT NULL ,
