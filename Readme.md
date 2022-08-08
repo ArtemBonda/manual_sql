@@ -36,9 +36,9 @@ docker-compose ps
 
 *  скопировать файл в контейнер
     ```
-    docker cp demo-small/demo-small.sql <id_container>:demo-small.sql
+    docker cp demo-small/demo-small.sql [id_container]:demo-small.sql
     ```
-   `<id_container>` - вставить номер id контейнера
+   `[id_container]` - вставить номер id контейнера
 
 2. Перейти в консоль докер
 * Миграция данных

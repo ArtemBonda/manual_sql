@@ -15,7 +15,7 @@ CREATE TABLE progress (
         CHECK ( term = 1 OR term = 2 ),
     mark numeric(1)  NOT NULL
         CHECK ( mark >= 3 AND  mark <=5)
-        DEFAULT 5,
+        DEFAULT 6,
     FOREIGN KEY (record_book)
         REFERENCES students (record_book)
         ON DELETE CASCADE
